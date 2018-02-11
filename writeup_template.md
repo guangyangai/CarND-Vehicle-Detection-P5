@@ -15,13 +15,12 @@ The goals / steps of this project are the following:
 * Estimate a bounding box for vehicles detected.
 
 [//]: # (Image References)
-[image1]: ./examples/car_not_car.png
-[image2]: ./examples/HOG_example.jpg
-[image3]: ./examples/sliding_windows.jpg
-[image4]: ./examples/sliding_window.jpg
-[image5]: ./examples/bboxes_and_heat.png
-[image6]: ./examples/labels_map.png
-[image7]: ./examples/output_bboxes.png
+[image1]: ./output_images/image_example.png
+[image2]: ./output_images/hog_car.jpg
+[image3]: ./output_images/hog_notcar.jpg
+[image5]: ./output_images/heat_map_example.png
+[image6]: ./output_images/heat_map_another_test.png
+[image7]: ./output_images/last_frame.png
 [video1]: ./project_video_output.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -50,6 +49,7 @@ Here is an example using the `HSV` color space with Hue channel and HOG paramete
 
 
 ![alt text][image2]
+![alt text][image3]
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
@@ -82,8 +82,10 @@ I used the following parameters for the sliding window search. The window size i
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Ultimately I searched on two scales using HSV 3-channel HOG features plus spatially binned color and histograms of color in the feature vector. To reduce false positives, I applied heatmap method define in the 6th cell of the notebook.  Here are some results on the test images:
+![alt text][image5]
+![alt text][image6]
+![alt text][image7]
 
-![alt text][image4]
 ---
 
 ### Video Implementation
