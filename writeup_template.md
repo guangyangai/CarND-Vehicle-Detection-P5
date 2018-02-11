@@ -16,8 +16,8 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 [image1]: ./output_images/image_example.png
-[image2]: ./output_images/hog_car.jpg
-[image3]: ./output_images/hog_notcar.jpg
+[image2]: ./output_images/hog_car.png
+[image3]: ./output_images/hog_notcar.png
 [image5]: ./output_images/heat_map_example.png
 [image6]: ./output_images/heat_map_another_test.png
 [image7]: ./output_images/last_frame.png
@@ -82,6 +82,7 @@ I used the following parameters for the sliding window search. The window size i
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
 Ultimately I searched on two scales using HSV 3-channel HOG features plus spatially binned color and histograms of color in the feature vector. To reduce false positives, I applied heatmap method define in the 6th cell of the notebook.  Here are some results on the test images:
+
 ![alt text][image5]
 ![alt text][image6]
 ![alt text][image7]
