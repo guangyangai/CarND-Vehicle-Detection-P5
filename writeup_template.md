@@ -16,11 +16,11 @@ The goals / steps of this project are the following:
 
 [//]: # (Image References)
 [image1]: ./output_images/image_example.png
-[image2]: ./output_images/hog_car.png
-[image3]: ./output_images/hog_notcar.png
-[image5]: ./output_images/heat_map_example.png
-[image6]: ./output_images/heat_map_another_test.png
-[image7]: ./output_images/last_frame.png
+[image2]: ./output_images/hog_car_YCrCb_color_space.png
+[image3]: ./output_images/hog_notcar_YCrCb_color_space.png
+[image4]: ./output_images/img_apply_roi_mask.png
+[image5]: ./output_images/lane_w_car_locations.png
+[image6]: ./output_images/lane_w_car_locations_another.png
 [video1]: ./project_video_output.mp4
 
 ## [Rubric](https://review.udacity.com/#!/rubrics/513/view) Points
@@ -45,7 +45,7 @@ I started by reading in all the `vehicle` and `non-vehicle` images.  Here is an 
 
 I then explored different color spaces and different `skimage.hog()` parameters (`orientations`, `pixels_per_cell`, and `cells_per_block`).  I grabbed random images from each of the two classes and displayed them to get a feel for what the `skimage.hog()` output looks like.
 
-Here is an example using the `HSV` color space with Hue channel and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)` :
+Below is an example using the `YCrCb` color space with Hue channel and HOG parameters of `orientations=9`, `pixels_per_cell=(8, 8)` and `cells_per_block=(2, 2)`. I used `YCrCb` color space because it appears that the difference in the HOG map is most obvious. 
 
 
 ![alt text][image2]
@@ -53,8 +53,8 @@ Here is an example using the `HSV` color space with Hue channel and HOG paramete
 
 #### 2. Explain how you settled on your final choice of HOG parameters.
 
-I tried various combinations of parameters and track the accuracies on 100 test samples. With below parameters, I was able to get 0.9916 accuracy. 
-cspace = 'HSV'
+I tried various combinations of parameters and track the accuracies on 100 test samples. With below parameters, I was able to get 0.9899 accuracy. 
+cspace = 'YCrCb'
 hog_channel = 'ALL'
 spatial_size = (32,32)
 histbin = 32
@@ -70,7 +70,7 @@ I trained a linear SVM using the concatenated features (HOG feature, binned colo
 
 #### 1. Describe how (and identify where in your code) you implemented a sliding window search.  How did you decide what scales to search and how much to overlap windows?
 
-I used the following parameters for the sliding window search. The window size is determined by the number of pixel per cell in the original sampling in the. I used 2 cells per step during sliding.
+I used the following parameters for the sliding window search. The window size is determined by the number of pixel per cell in the original sampling in the. I used 1 cell per step during sliding to avoid false negatives.
 ```
     window = 64
     nblocks_per_window = (window // pix_per_cell) - cell_per_block + 1
@@ -81,11 +81,14 @@ I used the following parameters for the sliding window search. The window size i
 
 #### 2. Show some examples of test images to demonstrate how your pipeline is working.  What did you do to optimize the performance of your classifier?
 
-Ultimately I searched on two scales using HSV 3-channel HOG features plus spatially binned color and histograms of color in the feature vector. To reduce false positives, I applied heatmap method define in the 6th cell of the notebook.  Here are some results on the test images:
+Ultimately I searched on two scales using HSV 3-channel HOG features plus spatially binned color and histograms of color in the feature vector. To enhance the performance of the classifier, I applied an ROI masked based on the left locations in the image. So the search for vehicle is only within the ROI. The locations of the left lane are detected using the code from last project. 
+An example is as below: 
+![alt text][image4]
 
+Here are some results on the test images:
 ![alt text][image5]
 ![alt text][image6]
-![alt text][image7]
+
 
 ---
 
@@ -96,7 +99,8 @@ Here's a [link to my video result](./project_video_output.mp4)
 
 
 #### 2. Describe how (and identify where in your code) you implemented some kind of filter for false positives and some method for combining overlapping bounding boxes.
-I am not sure how to do that in the moviepy package, it seems that there are no status tracking in this package. 
+To reduce false positives, I applied heat map method suggested in the course. Also I applied an ROI masked based on the left locations in the image. The locations of the left lane are detected using the code from last project. 
+I also kept a history of heat maps obtained from previous frames and applied thresholding on the averaged heat map. In this way, the results are smoothed. The disadvatange is that the performance get worse because it needs to iterate through the kept history of the heat maps.
 
 ---
 
@@ -104,5 +108,5 @@ I am not sure how to do that in the moviepy package, it seems that there are no 
 
 #### 1. Briefly discuss any problems / issues you faced in your implementation of this project.  Where will your pipeline likely fail?  What could you do to make it more robust?
 
-There are a lot of the false postives even though I applied heatmap thresholding. This could mean that my feature extraction is not working well although I got very high accuracy rate on the test data set. I will further improve and test on feature extraction if I got more time. 
+The heatmap threshold and the a lot of parameters in the svc trainer and predictor are hard-coded to this problem setting (lighting condition etc.). In other weather condition or lighting condition, these parameters might let the classifier fail. To make it robust, we should try the classifier in different conditions and see whether we need to set these parameters differently given the weather/lighting condition.  
 
